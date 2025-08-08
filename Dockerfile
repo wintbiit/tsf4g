@@ -1,7 +1,7 @@
 FROM python:2.7
 
-WORKDIR /app
-COPY . .
-WORKDIR /app/TdrCodeGen
+COPY . /src
 
-ENTRYPOINT ["python", "tdr.py"]
+WORKDIR /workspace
+
+ENTRYPOINT ["python", "/src/TdrCodeGen/tdr.py"]
