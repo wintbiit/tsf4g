@@ -9,7 +9,7 @@ type Message interface {
 	Pack(cutVer uint32) ([]byte, error)
 	PackTo(cutVer uint32, w *Writer) error
 	Unpack(cutVer uint32, data []byte) error
-	UnpackFrom(cutVer uint32, r *Reader)
+	UnpackFrom(cutVer uint32, r *Reader) error
 }
 
 func Marshal(m Message, cutVer uint32) ([]byte, error) {
