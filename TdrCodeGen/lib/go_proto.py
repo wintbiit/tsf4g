@@ -22,7 +22,7 @@ import (
     "errors"
     "io"
 
-    "github.com/tencentyun/tsf4g/tdrcom"
+    "github.com/wintbiit/tsf4g/tdrcom"
 )
 #@ endblock
 

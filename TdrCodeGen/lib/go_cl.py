@@ -61,9 +61,11 @@ def c_convert_to_title(str):
             if to_upper:
                 c = c.upper()
                 to_upper = False
-            result.append(c)
         else:
             to_upper = True
+
+        if c.isalpha() or c.isdigit():
+            result.append(c)
     return "".join(result)
 
 
