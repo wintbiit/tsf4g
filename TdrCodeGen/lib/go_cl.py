@@ -64,7 +64,7 @@ def c_convert_to_title(str):
         else:
             to_upper = True
 
-        if c.isalpha() or c.isdigit():
+        if c.isalpha() or c.isdigit() or c == '.':
             result.append(c)
     return "".join(result)
 
