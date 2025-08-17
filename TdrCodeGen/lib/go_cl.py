@@ -84,7 +84,7 @@ def c_convert_to_go_type(typeid):
 class GoCompiler(TdrCompiler):
     ''' 
     go code compiler 
-    author: cowhuang@tencent.com
+    author: assamluo@tencent.com
     '''
 
     def __init__(self, version, outdir):
@@ -121,7 +121,7 @@ class GoCompiler(TdrCompiler):
         if not os.path.isdir(outdir):
             os.makedirs(outdir, 0755)
         self.__pkgs.append(pkgname)
-        return self.__create_code_file(os.path.join(outdir, metalib.modname + '.go'), metalib.encoding, metalib, pkgname=pkgname, tdrversion=self.version, godoc=self.__doc__)
+        return self.__create_code_file(os.path.join(outdir, metalib.modname + '.tdr.go'), metalib.encoding, metalib, pkgname=pkgname, tdrversion=self.version, godoc=self.__doc__)
 
     def process_metalib(self, metalib):
         outf = self.__create_out(metalib)
