@@ -26,6 +26,8 @@ import (
 )
 #@ endblock
 
+var endian = binary.LittleEndian
+
 #@ block: struct_code
 {{c_render_block('struct_head', 0, _context_)}}
 {{c_render_block('struct_var_def', 0, _context_)}}
@@ -237,7 +239,7 @@ func (this *{{sname}}) PackTo(cutVer uint32, w *tdrcom.Writer) error {
     // sizeinfo
     endPos := w.Tell()
     w.Seek(beginPos+{{get_field_offset(sizeinfo)}}, io.SeekStart)
-    err = binary.Write(w, binary.BigEndian, {{c_convert_to_go_type(get_field(sizeinfo).typeid)}}(endPos-beginPos))
+    err = binary.Write(w, endian, {{c_convert_to_go_type(get_field(sizeinfo).typeid)}}(endPos-beginPos))
     if err != nil {
         return errors.New("{{sname}}'s sizeinfo {{c_convert_to_title(sizeinfo)}} pack error\n" + err.Error())
     }
@@ -280,7 +282,7 @@ if this.{{frefer}} > 0 {
     }
         % else:
     refer{{c_convert_to_title(fname)}} := this.{{fname}}[:this.{{frefer}}]
-    err = binary.Write(w, binary.BigEndian, refer{{c_convert_to_title(fname)}})
+    err = binary.Write(w, endian, refer{{c_convert_to_title(fname)}})
     if err != nil {
         return errors.New("{{sname}}.{{fname}} pack error\n" + err.Error())
     }
@@ -330,7 +332,7 @@ if this.{{frefer}} == 1 {
 % if fld.sizeinfo:
 {{fname}}EndPos := w.Tell()
 w.Seek(beginPos+{{get_field_offset(fld.sizeinfo)}}, io.SeekStart)
-err = binary.Write(w, binary.BigEndian, {{c_convert_to_go_type(get_field(fld.sizeinfo).typeid)}}({{fname}}EndPos-{{fname}}BeginPos))
+err = binary.Write(w, endian, {{c_convert_to_go_type(get_field(fld.sizeinfo).typeid)}}({{fname}}EndPos-{{fname}}BeginPos))
 if err != nil {
     return errors.New("{{fname}}'s sizeinfo {{fld.sizeinfo}} pack error\n" + err.Error())
 }
@@ -341,7 +343,7 @@ w.Seek({{fname}}EndPos, io.SeekStart)
 
 #@ block: struct_pack_base
 % fname = c_get_struct_field_name(name)
-err = binary.Write(w, binary.BigEndian, this.{{fname}})
+err = binary.Write(w, endian, this.{{fname}})
 if err != nil {
     return errors.New("{{struct_name}}.{{fname}} pack error\n" + err.Error())
 }
@@ -349,7 +351,7 @@ if err != nil {
 
 #@ block: struct_pack_base_array
 % fname = c_get_struct_field_name(name)
-err = binary.Write(w, binary.BigEndian, this.{{fname}}[:])
+err = binary.Write(w, endian, this.{{fname}}[:])
 if err != nil {
     return errors.New("{{struct_name}}.{{fname}} pack error\n" + err.Error())
 }
@@ -358,20 +360,20 @@ if err != nil {
 #@ block: struct_pack_string
 % fname = c_get_struct_field_name(name)
 % if fld_idx:
-err = binary.Write(w, binary.BigEndian, uint32(len(this.{{fname}}[i]))+1)
+err = binary.Write(w, endian, uint32(len(this.{{fname}}[i]))+1)
 if err != nil {
     return errors.New("{{struct_name}}.{{fname}} string size pack error\n" + err.Error())
 }
-err = binary.Write(w, binary.BigEndian, append([]byte(this.{{fname}}[i]), 0))
+err = binary.Write(w, endian, append([]byte(this.{{fname}}[i]), 0))
 if err != nil {
     return errors.New("{{struct_name}}.{{fname}} string content pack error\n" + err.Error())
 }
 % else:
-err = binary.Write(w, binary.BigEndian, uint32(len(this.{{fname}}))+1)
+err = binary.Write(w, endian, uint32(len(this.{{fname}}))+1)
 if err != nil {
     return errors.New("{{struct_name}}.{{fname}} string size pack error\n" + err.Error())
 }
-err = binary.Write(w, binary.BigEndian, append([]byte(this.{{fname}}), 0))
+err = binary.Write(w, endian, append([]byte(this.{{fname}}), 0))
 if err != nil {
     return errors.New("{{struct_name}}.{{fname}} string content pack error\n" + err.Error())
 }
@@ -428,7 +430,7 @@ func (this *{{sname}}) UnpackFrom(cutVer uint32, r *tdrcom.Reader) error {
     var netVer {{c_convert_to_go_type(get_field(versionindicator).typeid)}}
     oriPos := r.Tell()
     r.Seek(oriPos+{{get_field_offset(versionindicator)}}, io.SeekStart)
-    err = binary.Read(r, binary.BigEndian, &netVer)
+    err = binary.Read(r, endian, &netVer)
     if err != nil {
         return errors.New("{{sname}} get net version error\n" + err.Error())
     }
@@ -530,7 +532,7 @@ for i := 0; i < int({{fld.count}}); i++ {
     % else:
         % if fld.refer:
 refer{{fname}} := this.{{fname}}[:this.{{frefer}}]
-err = binary.Read(r, binary.BigEndian, refer{{fname}})
+err = binary.Read(r, endian, refer{{fname}})
 if err != nil {
     return errors.New("{{sname}}.{{fname}} pack error\n" + err.Error())
 }
@@ -564,7 +566,7 @@ if this.{{frefer}} == 1{
 
 #@ block: struct_unpack_base
 % fname = c_get_struct_field_name(name)
-err = binary.Read(r, binary.BigEndian, &this.{{fname}})
+err = binary.Read(r, endian, &this.{{fname}})
 if err != nil {
     return errors.New("{{struct_name}}.{{fname}} unpack error\n" + err.Error())
 }
@@ -572,7 +574,7 @@ if err != nil {
 
 #@ block: struct_unpack_base_array
 % fname = c_get_struct_field_name(name)
-err = binary.Read(r, binary.BigEndian, this.{{fname}}[:])
+err = binary.Read(r, endian, this.{{fname}}[:])
 if err != nil {
     return errors.New("{{struct_name}}.{{fname}} unpack error\n" + err.Error())
 }
@@ -581,13 +583,13 @@ if err != nil {
 #@ block: struct_unpack_string
 % fname = c_get_struct_field_name(name)
 var {{name}}Size uint32
-err = binary.Read(r, binary.BigEndian, &{{name}}Size)
+err = binary.Read(r, endian, &{{name}}Size)
 if err != nil {
     return errors.New("{{struct_name}}.{{fname}} string size unpack error\n" + err.Error())
 }
 
 {{name}}Bytes := make([]byte, {{name}}Size)
-err = binary.Read(r, binary.BigEndian, {{name}}Bytes)
+err = binary.Read(r, endian, {{name}}Bytes)
 if err != nil {
     return errors.New("{{struct_name}}.{{fname}} string content unpack error\n" + err.Error())
 }
