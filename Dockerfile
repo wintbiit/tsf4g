@@ -8,7 +8,7 @@ RUN sed -i 's|deb http://deb.debian.org/debian|deb http://archive.debian.org/deb
     apt-get install -y golang git && \
     rm -rf /var/lib/apt/lists/*
 
-RUN go get golang.org/x/tools/cmd/goimports && goimports -h
+RUN go get golang.org/x/tools/cmd/goimports
 
 COPY . /src
 
