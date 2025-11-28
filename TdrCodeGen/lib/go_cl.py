@@ -94,12 +94,7 @@ class GoCompiler(TdrCompiler):
 
     def complete(self):
         import os
-        go_tools = {
-            "goimports": "golang.org/x/tools/cmd/goimports",
-        }
-        for _, path in go_tools.items():
-            os.system("go get " + path)
-
+        
         print("goimports & gofmt file")
         for pkg in self.__pkgs:
             outdir = os.path.join(self.__outdir, pkg)
