@@ -25,6 +25,7 @@ import (
 )
 
 var endian = binary.LittleEndian
+var _ = io.SeekStart // avoid unused import error
 #@ endblock
 
 #@ block: struct_code
