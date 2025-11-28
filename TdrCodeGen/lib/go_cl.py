@@ -95,10 +95,6 @@ class GoCompiler(TdrCompiler):
         import os
         
         print("goimports & gofmt file")
-        for pkg in self.__pkgs:
-            outdir = os.path.join(self.__outdir, pkg)
-            os.system("goimports -w " + outdir)
-            os.system("gofmt -w -s -e " + outdir)
 
     def __create_code_file(self, path, encoding, *args, **kws):
         if 'encoding' not in kws:
