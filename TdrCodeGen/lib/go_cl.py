@@ -84,7 +84,6 @@ def c_convert_to_go_type(typeid):
 class GoCompiler(TdrCompiler):
     ''' 
     go code compiler 
-    author: assamluo@tencent.com
     '''
 
     def __init__(self, version, outdir):
