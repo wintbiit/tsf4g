@@ -8,7 +8,7 @@ RUN sed -i 's|deb http://deb.debian.org/debian|deb http://archive.debian.org/deb
     apt-get install -y golang && \
     rm -rf /var/lib/apt/lists/*
 
-RUN go install golang.org/x/tools/cmd/goimports@latest
+RUN export GO111MODULE=on && go install golang.org/x/tools/cmd/goimports@latest
 
 COPY . /src
 
